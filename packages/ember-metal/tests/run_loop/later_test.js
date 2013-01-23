@@ -52,3 +52,26 @@ test('should invoke after specified period of time - target/method/args', functi
   }, 150);
 
 });
+
+test('should always invokve in next run loop', function(){
+  var obj = { },
+    scheduledDuring,
+    executedDuring;
+
+  Ember.run(function(){
+    scheduleDurring = Ember.guidFor(Ember.run.currentRunLoop);
+
+    Ember.run.later(obj, function(amt) {
+      executedDuring = Ember.guidFor(Ember.run.currentRunLoop);
+    }, 0);
+
+    // do stuff that makes this slow and long...
+  });
+
+  stop();
+
+  setTimeout(function(){
+    start();
+    equal(scheduleDurring !== executedDuring, true,  'bro');
+  },50);
+});

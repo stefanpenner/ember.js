@@ -467,7 +467,9 @@ Ember.run.later = function(target, method) {
   timer   = { target: target, method: method, expires: expires, args: args };
   guid    = Ember.guidFor(timer);
   timers[guid] = timer;
-  run.once(timers, invokeLaterTimers);
+  //run.next(function(){
+    run.once(timers, invokeLaterTimers);
+  //});
   return guid;
 };
 
