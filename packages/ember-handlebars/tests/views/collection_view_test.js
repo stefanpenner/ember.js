@@ -44,6 +44,44 @@ test("passing a block to the collection helper sets it as the template for examp
   equal(view.$('label').length, 3, 'one label element is created for each content item');
 });
 
+test("contained bindAttr works within tables", function() {
+  expect(2);
+
+  var object =  Ember.Object.create({isSelected: true}),
+    template = '{{controller}} {{view ListView contentBinding="controller"}}',
+    controller, ItemView;
+
+  controller = Ember.ArrayController.create({
+    content: Ember.A([object])
+  });
+
+  ItemView = Ember.View.extend({
+    template: Ember.Handlebars.compile('<label {{bindAttr class="view.content.isSelected:on:off"}}></label>')
+  });
+
+  lookup.ListView = Ember.CollectionView.extend({
+    tagName: 'table',
+    itemViewClass: ItemView
+  });
+
+  view = Ember.View.create({
+    template: Ember.Handlebars.compile(template),
+    controller: controller
+  });
+
+  Ember.run(function() {
+    view.appendTo('#qunit-fixture');
+  });
+
+  equal(view.$('label').attr('class'), 'on');
+
+  Ember.run(function() {
+    object.toggleProperty('isSelected');
+  });
+
+  equal(view.$('label').attr('class'), 'off');
+});
+
 test("collection helper should accept relative paths", function() {
   Ember.TESTING_DEPRECATION = true;
 
