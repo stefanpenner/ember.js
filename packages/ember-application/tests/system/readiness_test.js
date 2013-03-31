@@ -55,9 +55,11 @@ module("Application readiness", {
 // synchronously during the application's initialization, we get the same behavior as if
 // it was triggered after initialization.
 
-test("Ember.Application's ready event is called right away if jQuery is already ready", function() {
+test("Ember.Application's ready event is called right away if jQuery is already ready", function(done) {
   var wasResolved = 0;
   jQuery.isReady = true;
+
+  domReady();
 
   Ember.run(function() {
     application = Application.create({ router: false });
@@ -71,11 +73,6 @@ test("Ember.Application's ready event is called right away if jQuery is already 
 
   equal(wasResolved, 1);
   equal(readyWasCalled, 1, "ready was called");
-
-  domReady();
-
-  equal(wasResolved, 1);
-  equal(readyWasCalled, 1, "application's ready was not called again");
 });
 
 test("Ember.Application's ready event is called after the document becomes ready", function() {

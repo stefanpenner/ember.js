@@ -498,7 +498,7 @@ test("The Special Page returning a promise puts the app into a loading state unt
   equal(Ember.$('p', '#qunit-fixture').text(), "LOADING!", "The app is in the loading state");
 
   Ember.run(function() {
-    menuItem.resolve(menuItem);
+    menuItem.resolve._fulfill(menuItem);
   });
 
   equal(Ember.$('p', '#qunit-fixture').text(), "1", "The app is now in the specials state");
@@ -535,7 +535,7 @@ test("The Special page returning an error puts the app into the failure state", 
 
   Ember.run(function() {
     router.handleURL("/specials/1");
-    menuItem.resolve(menuItem);
+    menuItem.resolve._fulfill(menuItem);
   });
 
   equal(Ember.$('p', '#qunit-fixture').text(), "FAILURE!", "The app is now in the failure state");
@@ -574,7 +574,7 @@ test("The Special page returning an error puts the app into a default failure st
 
   Ember.run(function() {
     router.handleURL("/specials/1");
-    menuItem.resolve(menuItem);
+    menuItem.resolve._fulfill(menuItem);
   });
 
   equal(lastFailure, 'Setup error');

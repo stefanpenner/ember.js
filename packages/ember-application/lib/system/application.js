@@ -493,7 +493,7 @@ var Application = Ember.Application = Ember.Namespace.extend(Ember.DeferredMixin
       Ember.BOOTED = true;
     }
 
-    this.resolve(this);
+    this.resolve._fulfill(this);
   },
 
   /**

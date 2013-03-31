@@ -1,8 +1,8 @@
 var RSVP = requireModule("rsvp");
 
-RSVP.async = function(callback, binding) {
+RSVP.configure('async', function(callback, binding) {
   Ember.run.schedule('actions', binding, callback);
-};
+});
 
 /**
 @module ember
@@ -34,21 +34,28 @@ Ember.DeferredMixin = Ember.Mixin.create({
 
     @method resolve
   */
-  resolve: function(value) {
-    get(this, 'promise').resolve(value);
-  },
+  resolve: null,
 
   /**
     Reject a Deferred object and call any `failCallbacks` with the given args.
 
     @method reject
   */
-  reject: function(value) {
-    get(this, 'promise').reject(value);
-  },
+  reject: null,
 
-  promise: Ember.computed(function() {
-    return new RSVP.Promise();
-  })
+  init: function() {
+    var that, promise;
+    that = this;
+
+    this._super();
+
+    promise = new RSVP.Promise(function(resolve, reject){
+      // maintain old Deferred api
+      that.resolve = resolve;
+      that.reject = reject;
+    });
+
+    this.set('promise', promise);
+  }
 });
 
