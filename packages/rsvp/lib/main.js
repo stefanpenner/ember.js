@@ -398,7 +398,7 @@ define("rsvp/promise",
 
       if (objectOrFunction(value) && isFunction(value.then)) {
         value.then(function(value) {
-          resolve(promise, value);
+          fulfill(promise, value);
         }, function(error) {
           reject(promise, error);
         });
@@ -450,7 +450,7 @@ define("rsvp/promise",
         fulfill(promise, value);
       } else if (objectOrFunction(value) && isFunction(value.then)) {
         value.then(function(val) {
-          resolve(promise, val);
+          fulfill(promise, val);
         }, function(val) {
           reject(promise, val);
         });
