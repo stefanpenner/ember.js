@@ -48,7 +48,13 @@ Ember.assert = function(desc, test) {
 
   if (Ember.testing && !test) {
     // when testing, ensure test failures when assertions fail
+   try { 
     throw new Error("Assertion Failed: " + desc);
+   } catch(error) {
+      setTimeout(function(){
+        throw error;
+      }, 0);
+   }
   }
 };
 
