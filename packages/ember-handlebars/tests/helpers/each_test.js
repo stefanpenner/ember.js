@@ -214,6 +214,7 @@ test("it supports itemController", function() {
   });
 
   container.register('controller:person', Controller);
+  container.register('controller:array', Ember.ArrayController.extend());
 
   append(view);
 
@@ -264,6 +265,7 @@ test("itemController gets a parentController property", function() {
   });
 
   container.register('controller:person', Controller);
+  container.register('controller:array', Ember.ArrayController.extend());
 
   append(view);
 
@@ -289,6 +291,7 @@ test("it supports itemController when using a custom keyword", function() {
   });
 
   container.register('controller:person', Controller);
+  container.register('controller:array', Ember.ArrayController.extend());
 
   append(view);
 
@@ -318,6 +321,7 @@ test("it supports {{itemView=}}", function() {
   });
 
   container.register('view:anItemView', itemView);
+  container.register('controller:array', Ember.ArrayController.extend());
 
   append(view);
 

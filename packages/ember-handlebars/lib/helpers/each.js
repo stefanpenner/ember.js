@@ -15,12 +15,17 @@ Ember.Handlebars.EachView = Ember.CollectionView.extend(Ember._Metamorph, {
     var binding;
 
     if (itemController) {
-      var controller = Ember.ArrayController.create();
-      set(controller, 'itemController', itemController);
-      set(controller, 'container', get(this, 'controller.container'));
-      set(controller, '_eachView', this);
-      set(controller, 'target', get(this, 'controller'));
-      set(controller, 'parentController', get(this, 'controller'));
+
+      var container =  get(this, 'controller.container');
+
+      // TODO: should get injections
+      var controller = container.lookupFactory('controller:array').create({
+        itemController: itemController,
+        container: get(this, 'controller.container'), // TODO: will come from injection
+        _eachView: this,
+        target: get(this, 'controller'), // overrides default injection
+        parentController: get(this, 'controller')
+      });
 
       this.disableContentObservers(function() {
         set(this, 'content', controller);
