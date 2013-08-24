@@ -36,6 +36,7 @@ testing_packages:
   - ember
   - ember-extension-support
   - ember-testing
+  - ember-inflector
 testing_additional_requires:
   - ember-debug
   - rsvp
