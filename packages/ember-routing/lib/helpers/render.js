@@ -5,18 +5,20 @@
 
 var get = Ember.get, set = Ember.set;
 
+Ember.ENV.PRESERVE_SLASH_FOR_NAMESPACE = !Ember.ENV.PRESERVE_SLASH_FOR_NAMESPACE;
+
 require('ember-handlebars/helpers/view');
 
 Ember.onLoad('Ember.Handlebars', function(Handlebars) {
 
   /**
-    Calling ``{{render}}`` from within a template will insert another 
+    Calling ``{{render}}`` from within a template will insert another
     template that matches the provided name. The inserted template will
     access its properties on its own controller (rather than the controller
     of the parent template).
 
     If a view class with the same name exists, the view class also will be used.
-    
+
     Note: A given controller may only be used *once* in your app in this manner.
     A singleton instance of the controller will be created for you.
 
@@ -38,7 +40,7 @@ Ember.onLoad('Ember.Handlebars', function(Handlebars) {
     <h1>My great app</h1>
     {{render navigaton}}
     ```
-    
+
     ```html
     <h1>My great app</h1>
     <div class='ember-view'>
@@ -94,7 +96,9 @@ Ember.onLoad('Ember.Handlebars', function(Handlebars) {
       lookupOptions = { singleton: false };
     }
 
-    name = name.replace(/\//g, '.');
+    if (Ember.ENV.PRESERVE_SLASH_FOR_NAMESPACE) {
+      name = name.replace(/\//g, '.');
+    }
     container = options.data.keywords.controller.container;
     router = container.lookup('router:main');
 
