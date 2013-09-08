@@ -118,7 +118,7 @@ test("A registered factory is returned from lookupFactory is the same factory ea
 
   container.register('controller:post', PostController);
 
-  deepEqual(container.lookupFactory('controller:post'), container.lookupFactory('controller:post'), 'The return of lookupFactory is always the same');
+  notDeepEqual(container.lookupFactory('controller:post'), container.lookupFactory('controller:post'), 'The return of lookupFactory is always the same');
 });
 
 test("A factory returned from lookupFactory has a debugkey", function(){

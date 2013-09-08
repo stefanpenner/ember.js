@@ -438,7 +438,25 @@ define("container",
         @return {any}
       */
       lookupFactory: function(fullName) {
-        return factoryFor(this, fullName);
+        var container = this,
+          factory = factoryFor(container, fullName),
+          injections = injectionsFor(container, fullName),
+          factoryInjections = factoryInjectionsFor(container, fullName);
+
+        return {
+          class: factory,
+          create: function(attributes) {
+            var attributes = Ember.merge({}, injections, attributes);
+            return factory.create(attributes);
+          },
+          extend: function(attributes){
+            var attributes = Ember.merge({}, factoryInjections, attributes);
+            return factory.extend(attributes);
+
+          },
+          _debugContainerKey: fullName
+          // we could make a helpful toString
+        }
       },
 
       /**
@@ -785,6 +803,7 @@ define("container",
         return cache.get(fullName);
       }
 
+     // return factory;
       if (!factory || typeof factory.extend !== 'function' || (!Ember.MODEL_FACTORY_INJECTIONS && type === 'model')) {
         // TODO: think about a 'safe' merge style extension
         // for now just fallback to create time injection

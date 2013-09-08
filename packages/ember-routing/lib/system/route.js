@@ -653,7 +653,7 @@ Ember.Route = Ember.Object.extend(Ember.ActionHandler, {
 
     return {
       find: function(name, value) {
-        var modelClass = container.lookupFactory('model:' + name);
+        var modelClass = container.lookupFactory('model:' + name).class;
 
         Ember.assert("You used the dynamic segment " + name + "_id in your route "+ routeName + ", but " + namespace + "." + classify(name) + " did not exist and you did not override your route's `model` hook.", modelClass);
 
