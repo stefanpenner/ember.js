@@ -309,6 +309,15 @@ Ember.DataAdapter = Ember.Object.extend({
 
  // TODO: Use the resolver instead of looping over namespaces.
   getModelTypes: function() {
+    if (this.container.canCatalogEntriesByType('model') )
+    {
+    }
+    else
+    {
+      return this.getModelTypesViaNamespaces();
+    }
+  },
+  getModelTypesViaNamespaces: function() {
     var namespaces = Ember.A(Ember.Namespace.NAMESPACES), types = Ember.A(), self = this;
 
     namespaces.forEach(function(namespace) {

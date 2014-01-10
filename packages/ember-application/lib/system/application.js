@@ -412,9 +412,9 @@ var Application = Ember.Application = Ember.Namespace.extend(Ember.DeferredMixin
     App.inject('controller:application', 'email', 'model:email')
     App.inject('controller', 'source', 'source:main')
     ```
-    Please note that injections on models are currently disabled. 
+    Please note that injections on models are currently disabled.
     This was done because ember-data was not ready for fully a container aware ecosystem.
-    
+
     You can enable injections on models by setting `Ember.MODEL_FACTORY_INJECTIONS` flag to `true`
     If model factory injections are enabled, models should not be
     accessed globally (only through `container.lookupFactory('model:modelName'))`);
@@ -730,6 +730,8 @@ Ember.Application.reopenClass({
     container.normalize = container.resolver.normalize;
     container.describe  = container.resolver.describe;
     container.makeToString = container.resolver.makeToString;
+    container.canCatalogEntriesByType = container.resolver.canCatalogEntriesByType;
+    container.catalogEntriesByType = container.resolver.catalogEntriesByType;
 
     container.optionsForType('component', { singleton: false });
     container.optionsForType('view', { singleton: false });
@@ -800,6 +802,14 @@ function resolverFor(namespace) {
 
   resolve.makeToString = function(factory, fullName) {
     return resolver.makeToString(factory, fullName);
+  };
+
+  resolve.canCatalogEntriesByType = function(type) {
+    return resolver.canCatalogEntriesByType(type);
+  };
+
+  resolve.catalogEntriesByType = function(type) {
+    return resolver.catalogEntriesByType(type);
   };
 
   resolve.normalize = function(fullName) {

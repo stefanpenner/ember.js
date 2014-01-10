@@ -25,7 +25,7 @@ module("Data Adapter", {
   }
 });
 
-test("Model Types Added", function() {
+test("Model Types Added with DefaultResolver", function() {
   App.Post = Model.extend();
 
   adapter.reopen({
@@ -51,6 +51,42 @@ test("Model Types Added", function() {
 
   adapter.watchModelTypes(modelTypesAdded);
 
+});
+
+test("Model Types Added with custom Resolver", function() {
+  var PostClass = Model.extend(),
+      stubResolver = Ember.DefaultResolver.extend({
+        canCatalogEntriesByType: function(type){
+          return true;
+        },
+        catalogEntriesByType: function(type){
+          return [PostClass];
+        }
+      }).create();
+  App.__container__.resolver = stubResolver;
+
+  adapter.reopen({
+    getRecords: function() {
+      return Ember.A([1,2,3]);
+    },
+    columnsForType: function() {
+      return [ { name: 'title', desc: 'Title'} ];
+    }
+  });
+
+  Ember.run(App, 'advanceReadiness');
+
+  var modelTypesAdded = function(types) {
+
+    equal(types.length, 1);
+    var postType = types[0];
+    equal(postType.name, 'Post', 'Correctly sets the name');
+    equal(postType.count, 3, 'Correctly sets the record count');
+    strictEqual(postType.object, PostClass, 'Correctly sets the object');
+    deepEqual(postType.columns, [ {name: 'title', desc: 'Title'} ], 'Correctly sets the columns');
+  };
+
+  adapter.watchModelTypes(modelTypesAdded);
 });
 
 test("Model Types Updated", function() {

@@ -86,3 +86,21 @@ test("the default resolver throws an error if the fullName to resolve is invalid
   raises(function(){ locator.resolve('model:'); }, TypeError, /Invalid fullName/ );
   raises(function(){ locator.resolve(':type');  }, TypeError, /Invalid fullName/ );
 });
+
+test("the default resolver cannot catalog certain entries by type", function(){
+  equal(locator.canCatalogEntriesByType('model'), false, "canCatalogEntriesByType should return false for model");
+  equal(locator.canCatalogEntriesByType('template'), false, "canCatalogEntriesByType should return false for template");
+});
+
+test("the default resolver can catalog typical entries by type", function(){
+  equal(locator.canCatalogEntriesByType('controller'), true, "canCatalogEntriesByType should return true for controller");
+  equal(locator.canCatalogEntriesByType('route'), true, "canCatalogEntriesByType should return true for route");
+  equal(locator.canCatalogEntriesByType('view'), true, "canCatalogEntriesByType should return true for view");
+});
+
+test("the default resolver catalogs controller entries", function(){
+  application.PostController = Ember.Controller.extend();
+  var controllerClasses = locator.catalogEntriesByType('controller');
+  equal(controllerClasses.length, 1, "found 1 class");
+  equal(controllerClasses[0], application.PostController, "found the right class");
+});
