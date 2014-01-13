@@ -730,8 +730,6 @@ Ember.Application.reopenClass({
     container.normalize = container.resolver.normalize;
     container.describe  = container.resolver.describe;
     container.makeToString = container.resolver.makeToString;
-    container.canCatalogEntriesByType = container.resolver.canCatalogEntriesByType;
-    container.catalogEntriesByType = container.resolver.catalogEntriesByType;
 
     container.optionsForType('component', { singleton: false });
     container.optionsForType('view', { singleton: false });
@@ -761,6 +759,12 @@ Ember.Application.reopenClass({
     container.injection('controller', 'namespace', 'application:main');
 
     container.injection('route', 'router', 'router:main');
+
+    container.register('resolver-for-debugging:main', container.resolver.__resolver__, { instantiate: false });
+    container.injection('container-debug-adapter:main', 'resolver', 'resolver-for-debugging:main');
+
+    // Custom resolver authors may want to register their own ContainerDebugAdapter with this key
+    container.register('container-debug-adapter:main', Ember.ContainerDebugAdapter);
 
     return container;
   }
@@ -804,14 +808,6 @@ function resolverFor(namespace) {
     return resolver.makeToString(factory, fullName);
   };
 
-  resolve.canCatalogEntriesByType = function(type) {
-    return resolver.canCatalogEntriesByType(type);
-  };
-
-  resolve.catalogEntriesByType = function(type) {
-    return resolver.catalogEntriesByType(type);
-  };
-
   resolve.normalize = function(fullName) {
     if (resolver.normalize) {
       return resolver.normalize(fullName);
@@ -820,6 +816,8 @@ function resolverFor(namespace) {
       return fullName;
     }
   };
+
+  resolve.__resolver__ = resolver;
 
   return resolve;
 }

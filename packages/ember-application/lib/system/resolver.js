@@ -300,31 +300,6 @@ Ember.DefaultResolver = Ember.Object.extend({
     return description;
   },
 
-  canCatalogEntriesByType: function(type) {
-    if (type === 'model' || type === 'template') return false;
-    return true;
-  },
-
-  catalogEntriesByType: function(type) {
-    var namespaces = Ember.A(Ember.Namespace.NAMESPACES), types = Ember.A(), self = this;
-    var typeSuffixRegex = new RegExp(Ember.String.classify(type) + "$");
-    namespaces.forEach(function(namespace) {
-      if (namespace !== Ember) {
-        for (var key in namespace) {
-          if (!namespace.hasOwnProperty(key)) { continue; }
-          if (typeSuffixRegex.test(key)) {
-            var klass = namespace[key];
-            if (Ember.typeOf(klass) === 'class') {
-              types.push(klass);
-            }
-          }
-        }
-      }
-    });
-    return types;
-
-  },
-
   makeToString: function(factory, fullName) {
     return factory.toString();
   }
