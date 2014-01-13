@@ -39,9 +39,10 @@ test("the default ContainerDebugAdapter catalogs controller entries", function()
 });
 
 /*
- [ ] Where does "name" for the model class come from?
- [ ] What will the format of the "name" be in EAK?
- [ ] Get tests passing in Ember
+ [ ] Update getModelTypes to return an array of strings (model names) instead of classes
+ [ ] Update ContainerDebugAdapter#catalogEntriesByType to return an array of strings (model names) instead of classes
+ [ ] Update Ember Inspector to work with models as names (strings) instead of class references
+ [ ] Get tests passing in Ember with new approach
  [ ] Implement the container-debug-adapter in EAK
  [ ] What's up with timing for registering the container-debug-adapter?
  [ ] Verify that no changes are necessary for ember-data models to start showing up in Ember Extension
