@@ -68,7 +68,7 @@ Ember.generateGuid = function generateGuid(obj, prefix) {
   if (!prefix) prefix = Ember.GUID_PREFIX;
   var ret = (prefix + (uuid++));
   if (obj) {
-    if (obj[GUID_KEY] === null) {
+    if (obj[GUID_KEY] === null || Ember.ENUMERABLE_SAFETY) {
       obj[GUID_KEY] = ret;
     } else {
       GUID_DESC.value = ret;
@@ -122,7 +122,7 @@ Ember.guidFor = function guidFor(obj) {
       if (obj === Array)  return '(Array)';
       ret = 'ember' + (uuid++);
 
-      if (obj[GUID_KEY] === null) {
+      if (obj[GUID_KEY] === null || Ember.ENUMERABLE_SAFETY) {
         obj[GUID_KEY] = ret;
       } else {
         GUID_DESC.value = ret;

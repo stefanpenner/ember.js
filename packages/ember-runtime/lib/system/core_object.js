@@ -44,6 +44,8 @@ var nullDescriptor = {
   value: null
 };
 
+Ember.ENUMERABLE_SAFETY = false;
+
 function makeCtor() {
 
   // Note: avoid accessing any properties on the object since it makes the
@@ -56,8 +58,13 @@ function makeCtor() {
     if (!wasApplied) {
       Class.proto(); // prepare prototype...
     }
-    o_defineProperty(this, GUID_KEY, nullDescriptor);
-    o_defineProperty(this, '__nextSuper', undefinedDescriptor);
+    if (Ember.ENUMERABLE_SAFETY) {
+      o_defineProperty(this, GUID_KEY, nullDescriptor);
+      o_defineProperty(this, '__nextSuper', undefinedDescriptor);
+    } else {
+      this[GUID_KEY] = null;
+      this.__nextSuper = undefined;
+    }
     var m = meta(this), proto = m.proto;
     m.proto = this;
     if (initMixins) {
