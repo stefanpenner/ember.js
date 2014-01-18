@@ -1,7 +1,10 @@
 var RSVP = requireModule("rsvp");
 
 RSVP.configure('async', function(callback, promise) {
+  var wasTesting = Ember.testing;
+  Ember.testing = false;
   Ember.run.schedule('actions', promise, callback, promise);
+  Ember.testing = wasTesting;
 });
 
 RSVP.Promise.prototype.fail = function(callback, label){
