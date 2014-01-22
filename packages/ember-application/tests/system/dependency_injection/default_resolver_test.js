@@ -12,6 +12,8 @@ module("Ember.Application Depedency Injection", {
     Ember.TEMPLATES = {};
     Ember.lookup = originalLookup;
     Ember.run(application, 'destroy');
+    var UserInterfaceNamespace = Ember.Namespace.NAMESPACES_BY_ID['UserInterface'];
+    if (UserInterfaceNamespace) { Ember.run(UserInterfaceNamespace, 'destroy'); }
   }
 });
 
@@ -27,7 +29,7 @@ test('the default resolver can look things up in other namespaces', function() {
 test('the default resolver looks up templates in Ember.TEMPLATES', function() {
   function fooTemplate() {}
   function fooBarTemplate() {}
-  function fooBarBazTemplate() {}
+  function fooBarBazTemplate() {} 
 
   Ember.TEMPLATES['foo'] = fooTemplate;
   Ember.TEMPLATES['fooBar'] = fooBarTemplate;
@@ -63,8 +65,11 @@ test("the default resolver resolves helpers from Ember.Handlebars.helpers", func
   function barBazResolverTestHelper(){ return 'BAZ'; }
   Ember.Handlebars.registerHelper('fooresolvertest', fooresolvertestHelper);
   Ember.Handlebars.registerHelper('bar-baz-resolver-test', barBazResolverTestHelper);
-  equal(fooresolvertestHelper, locator.lookup('helper:fooresolvertest'), "looks up fooresolvertestHelper helper");
-  equal(barBazResolverTestHelper, locator.lookup('helper:bar-baz-resolver-test'), "looks up barBazResolverTestHelper helper");
+  var fooresolvertestHelperMATCH = locator.lookup('helper:fooresolvertest');
+  var barBazResolverTestHelperMATCH = locator.lookup('helper:bar-baz-resolver-test');
+
+  equal(fooresolvertestHelper, fooresolvertestHelperMATCH, "looks up fooresolvertestHelper helper");
+  equal(barBazResolverTestHelper, barBazResolverTestHelperMATCH, "looks up barBazResolverTestHelper helper");
 });
 
 test("the default resolver resolves container-registered helpers", function(){
@@ -72,8 +77,11 @@ test("the default resolver resolves container-registered helpers", function(){
   function gooGazResolverTestHelper(){ return 'GAZ'; }
   application.register('helper:gooresolvertest', gooresolvertestHelper);
   application.register('helper:goo-baz-resolver-test', gooGazResolverTestHelper);
-  equal(gooresolvertestHelper, locator.lookup('helper:gooresolvertest'), "looks up gooresolvertest helper");
-  equal(gooGazResolverTestHelper, locator.lookup('helper:goo-baz-resolver-test'), "looks up gooGazResolverTestHelper helper");
+  var gooresolvertestHelperMATCH = locator.lookup('helper:gooresolvertest');
+  var gooGazResolverTestHelperMATCH = locator.lookup('helper:goo-baz-resolver-test');
+
+  equal(gooresolvertestHelper, gooresolvertestHelperMATCH, "looks up gooresolvertest helper");
+  equal(gooGazResolverTestHelper, gooGazResolverTestHelperMATCH, "looks up gooGazResolverTestHelper helper");
 });
 
 test("the default resolver throws an error if the fullName to resolve is invalid", function(){
