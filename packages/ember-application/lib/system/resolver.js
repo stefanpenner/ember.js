@@ -8,7 +8,7 @@ var get = Ember.get,
     capitalize = Ember.String.capitalize,
     decamelize = Ember.String.decamelize;
 
-Ember.AbstractResolver = Ember.Object.extend({
+Ember.Resolver = Ember.Object.extend({
   /**
     This will be set to the Application instance when it is
     created.
