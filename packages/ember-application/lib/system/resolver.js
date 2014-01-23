@@ -321,9 +321,9 @@ Ember.DefaultResolver = Ember.Object.extend({
       fullName lookup string
     @method resolveHelper
   */
-  // resolveHelper: function(parsedName) {
-  //   return this.resolveOther(parsedName);
-  // },
+  resolveHelper: function(parsedName) {
+    return this.resolveOther(parsedName) || Ember.Handlebars.helpers[parsedName.fullNameWithoutType];
+  },
   /**
     Look up the specified object (from parsedName) on the appropriate
     namespace (usually on the Application)
