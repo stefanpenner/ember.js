@@ -63,7 +63,7 @@ function tap(proxy, promise) {
   controller.get('isFulfilled') //=> true
   ```
 
-  As the controller is an ObjectController, and the json now its content,
+  As the controller is an ObjectController, and the json now its model,
   all the json properties will be available directly from the controller.
 
   ```javascript
@@ -99,7 +99,7 @@ var PromiseProxyMixin = Mixin.create({
     @property reason
     @default null
   */
-  reason:    null,
+  reason:  null,
 
   /**
     Once the proxied promise has settled this will become `false`.
