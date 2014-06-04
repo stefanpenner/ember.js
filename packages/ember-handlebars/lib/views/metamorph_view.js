@@ -17,7 +17,7 @@ import run from "ember-metal/run_loop";
 @submodule ember-handlebars
 */
 
-var Metamorph = requireModule('metamorph');
+import Metamorph from 'metamorph';
 
 function notifyMutationListeners() {
   run.once(View, 'notifyMutationListeners');
