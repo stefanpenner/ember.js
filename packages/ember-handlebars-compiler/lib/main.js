@@ -6,6 +6,8 @@
 */
 
 import Ember from "ember-metal/core";
+import { View } from "ember-views/views/view";
+import Component from 'ember-views/views/component';
 
 // ES6Todo: you'll need to import debugger once debugger is es6'd.
 if (typeof Ember.assert === 'undefined')   { Ember.assert = function(){}; }
@@ -16,9 +18,6 @@ var objectCreate = Object.create || function(parent) {
   F.prototype = parent;
   return new F();
 };
-
-// set up for circular references later
-var View, Component;
 
 // ES6Todo: when ember-debug is es6'ed import this.
 // var emberAssert = Ember.assert;
