@@ -382,12 +382,14 @@ var EmberArray;
 function isArray(obj) {
   var modulePath, type;
 
-  if (typeof EmberArray === "undefined") {
-    modulePath = 'ember-runtime/mixins/array';
-    if (Ember.__loader.registry[modulePath]) {
-      EmberArray = Ember.__loader.require(modulePath)['default'];
-    }
-  }
+  // if runtime is included, we must use its isArray, otherwise we should use metal's
+  //
+  // if (typeof EmberArray === "undefined") {
+  //   modulePath = 'ember-runtime/mixins/array';
+  //   if (Ember.__loader.registry[modulePath]) {
+  //     EmberArray = Ember.__loader.require(modulePath)['default'];
+  //   }
+  // }
 
   if (!obj || obj.setInterval) { return false; }
   if (Array.isArray && Array.isArray(obj)) { return true; }
@@ -636,8 +638,6 @@ forEach.call(t, function(name) {
 
 var toString = Object.prototype.toString;
 
-var EmberObject;
-
 /**
   Returns a consistent type for the passed item.
 
@@ -690,16 +690,21 @@ var EmberObject;
   @param {Object} item the item to check
   @return {String} the type
 */
+
+// TODO: metal should not depend on runtime...
+import EmberObject from 'ember-runtime/system/object';
+
 function typeOf(item) {
   var ret, modulePath;
 
   // ES6TODO: Depends on Ember.Object which is defined in runtime.
-  if (typeof EmberObject === "undefined") {
-    modulePath = 'ember-runtime/system/object';
-    if (Ember.__loader.registry[modulePath]) {
-      EmberObject = Ember.__loader.require(modulePath)['default'];
-    }
-  }
+  // TODO: including runtime should provide/overlay a typeOf that is aware of Ember.Object
+  // if (typeof EmberObject === "undefined") {
+  //   modulePath = 'ember-runtime/system/object';
+  //   if (Ember.__loader.registry[modulePath]) {
+  //     EmberObject = Ember.__loader.require(modulePath)['default'];
+  //   }
+  // }
 
   ret = (item === null || item === undefined) ? String(item) : TYPE_MAP[toString.call(item)] || 'object';
 

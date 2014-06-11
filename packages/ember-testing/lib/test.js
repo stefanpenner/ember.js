@@ -5,6 +5,8 @@ import compare from "ember-runtime/compare";
 import RSVP from "ember-runtime/ext/rsvp";
 import setupForTesting from "ember-testing/setup_for_testing";
 import EmberApplication from "ember-application/system/application";
+import Adapter from "ember-testing/adapters/adapter";
+import QUnitAdapter from "ember-testing/adapters/qunit";
 
 /**
   @module ember
@@ -26,7 +28,8 @@ var injectHelpersCallbacks = [];
   @namespace Ember
 */
 var Test = {
-
+  Adapter: Adapter,
+  QUnitAdapter: QUnitAdapter,
   /**
     `registerHelper` is used to register a test helper that will be injected
     when `App.injectTestHelpers` is called.

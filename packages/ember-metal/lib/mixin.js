@@ -6,14 +6,14 @@
 import Ember from "ember-metal/core"; // warn, assert, wrap, et;
 import merge from "ember-metal/merge";
 import {
-  map,
-  indexOf,
-  forEach
+  map as a_map,
+  indexOf as a_indexOf,
+  forEach as a_forEach
 } from "ember-metal/array";
-import { create } from "ember-metal/platform";
+import { create as o_create } from "ember-metal/platform";
 import {
   guidFor,
-  meta,
+  meta as metaFor,
   META_KEY,
   wrap,
   makeArray,
@@ -37,13 +37,8 @@ import {
   removeListener
 } from "ember-metal/events";
 
-var REQUIRED,
-    a_map = map,
-    a_indexOf = indexOf,
-    a_forEach = forEach,
-    a_slice = [].slice,
-    o_create = create,
-    metaFor = meta;
+var REQUIRED;
+var a_slice = [].slice;
 
 function superFunction(){
   var ret, func = this.__nextSuper;

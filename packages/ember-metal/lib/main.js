@@ -8,7 +8,12 @@ Ember Metal
 // BEGIN IMPORTS
 import Ember from "ember-metal/core";
 import merge from "ember-metal/merge";
-import {instrument, subscribe, unsubscribe, reset} from "ember-metal/instrumentation";
+import {
+  instrument,
+  subscribe,
+  unsubscribe,
+  reset
+} from "ember-metal/instrumentation";
 import {
   generateGuid,
   GUID_KEY,
@@ -35,8 +40,16 @@ import {
 import EmberError from "ember-metal/error";
 import EnumerableUtils from "ember-metal/enumerable_utils";
 
-import {create, platform} from "ember-metal/platform";
-import {map, forEach, filter, indexOf} from "ember-metal/array";
+import {
+  create,
+  platform
+} from "ember-metal/platform";
+import {
+  map,
+  forEach,
+  filter,
+  indexOf
+} from "ember-metal/array";
 import Logger from "ember-metal/logger";
 
 import {get, getWithDefault, normalizeTuple, _getPath} from "ember-metal/property_get";
@@ -257,8 +270,5 @@ Ember.onerror = null;
 
 // do this for side-effects of updating Ember.assert, warn, etc when
 // ember-debug is present
-//if (Ember.__loader.registry['ember-debug']) {
-//  requireModule('ember-debug');
-//}
 
 export default Ember;

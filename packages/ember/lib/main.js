@@ -7,12 +7,9 @@ import "ember-views";
 import "ember-routing";
 import "ember-application";
 import "ember-extension-support";
+import Test from "ember-tesing";
 
-// do this to ensure that Ember.Test is defined properly on the global
-// if it is present.
-if (Ember.__loader.registry['ember-testing']) {
-  requireModule('ember-testing');
-}
+Ember.Test = Test;
 
 /**
 Ember
@@ -43,7 +40,6 @@ Ember.StateManager = generateRemovedClass("Ember.StateManager");
   @class StateManager
   @namespace Ember
 */
-
 Ember.State = generateRemovedClass("Ember.State");
 
 /**
