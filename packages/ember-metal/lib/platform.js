@@ -138,6 +138,7 @@ if (defineProperty) {
   @return {void}
 */
 platform.defineProperty = defineProperty;
+// ES6 TODO: drop "platform.defineProperty entirely"
 
 /**
   Set to true if the platform supports native getters and setters.
@@ -146,7 +147,7 @@ platform.defineProperty = defineProperty;
   @final
 */
 platform.hasPropertyAccessors = true;
-
+var isDefinePropertySimulated = false;
 if (!platform.defineProperty) {
   platform.hasPropertyAccessors = false;
 
@@ -154,7 +155,7 @@ if (!platform.defineProperty) {
     if (!desc.get) { obj[keyName] = desc.value; }
   };
 
-  platform.defineProperty.isSimulated = true;
+  isDefinePropertySimulated = platform.defineProperty.isSimulated = true;
 }
 
 if (Ember.ENV.MANDATORY_SETTER && !platform.hasPropertyAccessors) {
@@ -163,5 +164,7 @@ if (Ember.ENV.MANDATORY_SETTER && !platform.hasPropertyAccessors) {
 
 export {
   create,
-  platform
+  platform,
+  defineProperty,
+  isDefinePropertySimulated
 };

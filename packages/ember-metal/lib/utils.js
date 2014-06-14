@@ -1,7 +1,8 @@
 import Ember from "ember-metal/core";
 import {
-  platform,
-  create
+  create,
+  defineProperty,
+  isDefinePropertySimulated
 } from "ember-metal/platform";
 
 import {
@@ -22,8 +23,6 @@ import {
 */
 var GUID_PREFIX = 'ember';
 
-var o_defineProperty = platform.defineProperty;
-var o_create = create;
 // Used for guid generation...
 var numberCache  = [];
 var stringCache  = {};
@@ -79,7 +78,7 @@ export function generateGuid(obj, prefix) {
       obj[GUID_KEY] = ret;
     } else {
       GUID_DESC.value = ret;
-      o_defineProperty(obj, GUID_KEY, GUID_DESC);
+      defineProperty(obj, GUID_KEY, GUID_DESC);
     }
   }
   return ret;
@@ -133,7 +132,7 @@ export function guidFor(obj) {
         obj[GUID_KEY] = ret;
       } else {
         GUID_DESC.value = ret;
-        o_defineProperty(obj, GUID_KEY, GUID_DESC);
+        defineProperty(obj, GUID_KEY, GUID_DESC);
       }
       return ret;
   }
@@ -160,8 +159,6 @@ var META_DESC = {
   @type String
 */
 var META_KEY = '__ember_meta__';
-
-var isDefinePropertySimulated = platform.defineProperty.isSimulated;
 
 function Meta(obj) {
   this.descs = {};
@@ -228,7 +225,7 @@ function meta(obj, writable) {
   if (writable===false) return ret || EMPTY_META;
 
   if (!ret) {
-    if (!isDefinePropertySimulated) o_defineProperty(obj, META_KEY, META_DESC);
+    if (!isDefinePropertySimulated) defineProperty(obj, META_KEY, META_DESC);
 
     ret = new Meta(obj);
 
@@ -240,16 +237,16 @@ function meta(obj, writable) {
     ret.descs.constructor = null;
 
   } else if (ret.source !== obj) {
-    if (!isDefinePropertySimulated) o_defineProperty(obj, META_KEY, META_DESC);
+    if (!isDefinePropertySimulated) defineProperty(obj, META_KEY, META_DESC);
 
-    ret = o_create(ret);
-    ret.descs     = o_create(ret.descs);
-    ret.watching  = o_create(ret.watching);
+    ret = create(ret);
+    ret.descs     = create(ret.descs);
+    ret.watching  = create(ret.watching);
     ret.cache     = {};
     ret.cacheMeta = {};
     ret.source    = obj;
 
-    if (MANDATORY_SETTER) { ret.values = o_create(ret.values); }
+    if (MANDATORY_SETTER) { ret.values = create(ret.values); }
 
     obj[META_KEY] = ret;
   }
@@ -313,7 +310,7 @@ export function metaPath(obj, path, writable) {
       value = _meta[keyName] = { __ember_source__: obj };
     } else if (value.__ember_source__ !== obj) {
       if (!writable) { return undefined; }
-      value = _meta[keyName] = o_create(value);
+      value = _meta[keyName] = create(value);
       value.__ember_source__ = obj;
     }
 

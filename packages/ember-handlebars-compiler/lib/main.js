@@ -6,7 +6,7 @@
 */
 
 import Ember from "ember-metal/core";
-import { View } from "ember-views/views/view";
+import View from "ember-views/views/view";
 import Component from 'ember-views/views/component';
 
 // ES6Todo: you'll need to import debugger once debugger is es6'd.
@@ -105,9 +105,6 @@ var EmberHandlebars = Ember.Handlebars = objectCreate(Handlebars);
   @param {String} dependentKeys*
 */
 EmberHandlebars.helper = function(name, value) {
-  if (!View) { View = requireModule('ember-views/views/view')['default']; } // ES6TODO: stupid circular dep
-  if (!Component) { Component = requireModule('ember-views/views/component')['default']; } // ES6TODO: stupid circular dep
-
   Ember.assert("You tried to register a component named '" + name + "', but component names must include a '-'", !Component.detect(value) || name.match(/-/));
 
   if (View.detect(value)) {
