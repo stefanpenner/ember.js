@@ -9,6 +9,10 @@ import {
   _suspendObserver
 } from "ember-metal/observer";
 import run from "ember-metal/run_loop";
+import {
+  isGlobal as isGlobalPath
+} from "ember-metal/path_cache";
+
 
 // ES6TODO: where is Ember.lookup defined?
 /**
@@ -31,8 +35,6 @@ import run from "ember-metal/run_loop";
 */
 Ember.LOG_BINDINGS = false || !!Ember.ENV.LOG_BINDINGS;
 
-var IS_GLOBAL = /^([A-Z$]|([0-9][A-Z$]))/;
-
 /**
   Returns true if the provided path is global (e.g., `MyApp.fooController.bar`)
   instead of local (`foo.bar.baz`).
@@ -45,13 +47,6 @@ var IS_GLOBAL = /^([A-Z$]|([0-9][A-Z$]))/;
 */
 
 import dictionary from 'ember-metal/dictionary';
-
-var IS_GLOBAL_PATH_CACHE = dictionary(null);
-function isGlobalPath(path) {
-  return IS_GLOBAL_PATH_CACHE[path] || (
-    IS_GLOBAL_PATH_CACHE[path] = IS_GLOBAL.test(path)
-  );
-}
 
 function getWithGlobals(obj, path) {
   return get(isGlobalPath(path) ? Ember.lookup : obj, path);
