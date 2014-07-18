@@ -22,36 +22,87 @@ var platform = {};
   @method create
   @for Ember
 */
-var create = Object.create;
+var create;
+if (!Object.create && Object.create(null).hasOwnProperty !== undefined) {
+  // Contributed by Brandon Benvie, October, 2012
+  var createEmpty;
+  var supportsProto = !({'__proto__':null} instanceof Object);
+  // the following produces false positives
+  // in Opera Mini => not a reliable check
+  // Object.prototype.__proto__ === null
+  if (supportsProto || typeof document === 'undefined') {
+    createEmpty = function () {
+      return { '__proto__': null };
+    };
+  } else {
+    // In old IE __proto__ can't be used to manually set `null`, nor does
+    // any other method exist to make an object that inherits from nothing,
+    // aside from Object.prototype itself. Instead, create a new global
+    // object and *steal* its Object.prototype and strip it bare. This is
+    // used as the prototype to create nullary objects.
+    createEmpty = function () {
+      var iframe = document.createElement('iframe');
+      var parent = document.body || document.documentElement;
+      iframe.style.display = 'none';
+      parent.appendChild(iframe);
+      /* jshint scripturl:true */
+      iframe.src = 'javascript:';
+      var empty = iframe.contentWindow.Object.prototype;
+      parent.removeChild(iframe);
+      iframe = null;
+      delete empty.constructor;
+      delete empty.hasOwnProperty;
+      delete empty.propertyIsEnumerable;
+      delete empty.isPrototypeOf;
+      delete empty.toLocaleString;
+      delete empty.toString;
+      delete empty.valueOf;
+      empty['__proto__'] = null;
 
-// IE8 has Object.create but it couldn't treat property descriptors.
-if (create) {
-  if (create({a: 1}, {a: {value: 2}}).a !== 2) {
-    create = null;
+      function Empty() {}
+      Empty.prototype = empty;
+      // short-circuit future calls
+      createEmpty = function () {
+        return new Empty();
+      };
+      return new Empty();
+    };
   }
-}
 
-// STUB_OBJECT_CREATE allows us to override other libraries that stub
-// Object.create different than we would prefer
-if (!create || Ember.ENV.STUB_OBJECT_CREATE) {
-  var K = function() {};
+  create = function create(prototype, properties) {
+    var object;
+    function Type() {}  // An empty constructor.
 
-  create = function(obj, props) {
-    K.prototype = obj;
-    obj = new K();
-    if (props) {
-      K.prototype = obj;
-      for (var prop in props) {
-        K.prototype[prop] = props[prop].value;
+    if (prototype === null) {
+      object = createEmpty();
+    } else {
+      if (typeof prototype !== "object" && typeof prototype !== "function") {
+        // In the native implementation `parent` can be `null`
+        // OR *any* `instanceof Object`  (Object|Function|Array|RegExp|etc)
+        // Use `typeof` tho, b/c in old IE, DOM elements are not `instanceof Object`
+        // like they are in modern browsers. Using `Object.create` on DOM elements
+        // is...err...probably inappropriate, but the native version allows for it.
+        throw new TypeError("Object prototype may only be an Object or null"); // same msg as Chrome
       }
-      obj = new K();
+      Type.prototype = prototype;
+      object = new Type();
+      // IE has no built-in implementation of `Object.getPrototypeOf`
+      // neither `__proto__`, but this manually setting `__proto__` will
+      // guarantee that `Object.getPrototypeOf` will work as expected with
+      // objects created using `Object.create`
+      object['__proto__'] = prototype;
     }
-    K.prototype = null;
 
-    return obj;
+    if (properties !== void 0) {
+      Object.defineProperties(object, properties);
+    }
+
+    return object;
   };
 
   create.isSimulated = true;
+} else {
+  create = Object.create;
 }
 
 var defineProperty = Object.defineProperty;
