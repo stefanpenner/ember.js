@@ -43,8 +43,14 @@ var IS_GLOBAL = /^([A-Z$]|([0-9][A-Z$]))/;
   @param {String} path
   @return Boolean
 */
+
+import dictionary from 'ember-metal/dictionary';
+
+var IS_GLOBAL_PATH_CACHE = dictionary(null);
 function isGlobalPath(path) {
-  return IS_GLOBAL.test(path);
+  return IS_GLOBAL_PATH_CACHE[path] || (
+    IS_GLOBAL_PATH_CACHE[path] = IS_GLOBAL.test(path)
+  );
 }
 
 function getWithGlobals(obj, path) {
