@@ -274,6 +274,15 @@ function _triageMustacheHelper(property, options) {
   return helpers.bind.call(this, property, options);
 }
 
+import dictionary from 'ember-metal/dictionary';
+
+var ISNT_HELPER_CACHE = dictionary(null);
+function isntHelper(name) {
+  return ISNT_HELPER_CACHE[name] || (
+    ISNT_HELPER_CACHE[name] = name.indexOf('-') === -1
+  );
+}
+
 /**
   Used to lookup/resolve handlebars helpers. The lookup order is:
 
@@ -289,12 +298,13 @@ function _triageMustacheHelper(property, options) {
   @param {String} name the name of the helper to lookup
   @return {Handlebars Helper}
 */
+
 function resolveHelper(container, name) {
   if (helpers[name]) {
     return helpers[name];
   }
 
-  if (!container || name.indexOf('-') === -1) {
+  if (!container || isntHelper(name)) {
     return;
   }
 
