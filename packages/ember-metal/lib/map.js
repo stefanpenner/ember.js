@@ -31,15 +31,16 @@ function copy(obj) {
   var output = {};
 
   for (var prop in obj) {
-    if (obj.hasOwnProperty(prop)) { output[prop] = obj[prop]; }
+    // hasOwnPropery is not needed because obj is Object.create(null);
+    output[prop] = obj[prop];
   }
 
   return output;
 }
 
 function copyMap(original, newObject) {
-  var keys = original.keys.copy(),
-      values = copy(original.values);
+  var keys = original.keys.slice();
+  var values = copy(original.values);
 
   newObject.keys = keys;
   newObject.values = values;
@@ -47,127 +48,6 @@ function copyMap(original, newObject) {
 
   return newObject;
 }
-
-/**
-  This class is used internally by Ember and Ember Data.
-  Please do not use it at this time. We plan to clean it up
-  and add many tests soon.
-
-  @class OrderedSet
-  @namespace Ember
-  @constructor
-  @private
-*/
-function OrderedSet() {
-  this.clear();
-}
-
-/**
-  @method create
-  @static
-  @return {Ember.OrderedSet}
-*/
-OrderedSet.create = function() {
-  return new OrderedSet();
-};
-
-
-OrderedSet.prototype = {
-  /**
-    @method clear
-  */
-  clear: function() {
-    this.presenceSet = {};
-    this.list = [];
-  },
-
-  /**
-    @method add
-    @param obj
-  */
-  add: function(obj) {
-    var guid = guidFor(obj),
-        presenceSet = this.presenceSet,
-        list = this.list;
-
-    if (guid in presenceSet) { return; }
-
-    presenceSet[guid] = true;
-    list.push(obj);
-  },
-
-  /**
-    @method remove
-    @param obj
-  */
-  remove: function(obj) {
-    var guid = guidFor(obj),
-        presenceSet = this.presenceSet,
-        list = this.list;
-
-    delete presenceSet[guid];
-
-    var index = indexOf.call(list, obj);
-    if (index > -1) {
-      list.splice(index, 1);
-    }
-  },
-
-  /**
-    @method isEmpty
-    @return {Boolean}
-  */
-  isEmpty: function() {
-    return this.list.length === 0;
-  },
-
-  /**
-    @method has
-    @param obj
-    @return {Boolean}
-  */
-  has: function(obj) {
-    var guid = guidFor(obj),
-        presenceSet = this.presenceSet;
-
-    return guid in presenceSet;
-  },
-
-  /**
-    @method forEach
-    @param {Function} fn
-    @param self
-  */
-  forEach: function(fn, self) {
-    // allow mutation during iteration
-    var list = this.toArray();
-
-    for (var i = 0, j = list.length; i < j; i++) {
-      fn.call(self, list[i]);
-    }
-  },
-
-  /**
-    @method toArray
-    @return {Array}
-  */
-  toArray: function() {
-    return this.list.slice();
-  },
-
-  /**
-    @method copy
-    @return {Ember.OrderedSet}
-  */
-  copy: function() {
-    var set = new OrderedSet();
-
-    set.presenceSet = copy(this.presenceSet);
-    set.list = this.toArray();
-
-    return set;
-  }
-};
 
 /**
   A Map stores values indexed by keys. Unlike JavaScript's
@@ -190,8 +70,8 @@ OrderedSet.prototype = {
   @constructor
 */
 function Map() {
-  this.keys = OrderedSet.create();
-  this.values = {};
+  this.keys = [];
+  this.values = create(null);
 }
 
 Ember.Map = Map;
@@ -205,6 +85,8 @@ Map.create = function() {
 };
 
 Map.prototype = {
+  constructor: Map,
+
   /**
     This property will change as the number of objects in the map changes.
 
@@ -222,8 +104,8 @@ Map.prototype = {
     @return {*} the value associated with the key, or `undefined`
   */
   get: function(key) {
-    var values = this.values,
-        guid = guidFor(key);
+    var values = this.values;
+    var guid = guidFor(key);
 
     return values[guid];
   },
@@ -237,13 +119,16 @@ Map.prototype = {
     @param {*} value
   */
   set: function(key, value) {
-    var keys = this.keys,
-        values = this.values,
-        guid = guidFor(key);
+    var keys = this.keys;
+    var values = this.values;
+    var guid = guidFor(key);
 
-    keys.add(key);
+    if (values[guid] === undefined) {
+      keys.push(key);
+    }
+
     values[guid] = value;
-    set(this, 'length', keys.list.length);
+    set(this, 'length', keys.length);
   },
 
   /**
@@ -256,14 +141,18 @@ Map.prototype = {
   remove: function(key) {
     // don't use ES6 "delete" because it will be annoying
     // to use in browsers that are not ES6 friendly;
-    var keys = this.keys,
-        values = this.values,
-        guid = guidFor(key);
+    var keys = this.keys;
+    var values = this.values;
+    var guid = guidFor(key);
 
-    if (values.hasOwnProperty(guid)) {
-      keys.remove(key);
+    if (values[guid]) {
+      var index = indexOf.call(keys, key);
+      if (index > -1) {
+        keys.splice(index, 1);
+      }
+
       delete values[guid];
-      set(this, 'length', keys.list.length);
+      set(this, 'length', keys.length);
       return true;
     } else {
       return false;
@@ -278,10 +167,10 @@ Map.prototype = {
     @return {Boolean} true if the item was present, false otherwise
   */
   has: function(key) {
-    var values = this.values,
-        guid = guidFor(key);
+    var values = this.values;
+    var guid = guidFor(key);
 
-    return values.hasOwnProperty(guid);
+    return !!values[guid];
   },
 
   /**
@@ -296,87 +185,26 @@ Map.prototype = {
       callback. By default, `this` is the map.
   */
   forEach: function(callback, self) {
-    var keys = this.keys,
-        values = this.values;
+    var keys = this.keys;
+    var values = this.values;
+    var length = keys.length;
+    var guid, i, key;
 
-    keys.forEach(function(key) {
-      var guid = guidFor(key);
+    for (i = 0; i < length; i++) {
+      key = keys[i];
+      guid = guidFor(key);
       callback.call(self, key, values[guid]);
-    });
+    }
   },
 
   /**
     @method copy
     @return {Ember.Map}
   */
-  copy: function() {
-    return copyMap(this, new Map());
+  copy: function(options) {
+    return copyMap(this, new this.constructor(options));
   }
 };
 
-/**
-  @class MapWithDefault
-  @namespace Ember
-  @extends Ember.Map
-  @private
-  @constructor
-  @param [options]
-    @param {*} [options.defaultValue]
-*/
-function MapWithDefault(options) {
-  Map.call(this);
-  this.defaultValue = options.defaultValue;
-}
-
-/**
-  @method create
-  @static
-  @param [options]
-    @param {*} [options.defaultValue]
-  @return {Ember.MapWithDefault|Ember.Map} If options are passed, returns
-    `Ember.MapWithDefault` otherwise returns `Ember.Map`
-*/
-MapWithDefault.create = function(options) {
-  if (options) {
-    return new MapWithDefault(options);
-  } else {
-    return new Map();
-  }
-};
-
-MapWithDefault.prototype = create(Map.prototype);
-
-/**
-  Retrieve the value associated with a given key.
-
-  @method get
-  @param {*} key
-  @return {*} the value associated with the key, or the default value
-*/
-MapWithDefault.prototype.get = function(key) {
-  var hasValue = this.has(key);
-
-  if (hasValue) {
-    return Map.prototype.get.call(this, key);
-  } else {
-    var defaultValue = this.defaultValue(key);
-    this.set(key, defaultValue);
-    return defaultValue;
-  }
-};
-
-/**
-  @method copy
-  @return {Ember.MapWithDefault}
-*/
-MapWithDefault.prototype.copy = function() {
-  return copyMap(this, new MapWithDefault({
-    defaultValue: this.defaultValue
-  }));
-};
-
-export {
-  OrderedSet,
-  Map,
-  MapWithDefault
-};
+export var copyMap = copyMap;
+export default Map;

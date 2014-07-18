@@ -1,8 +1,6 @@
-import {
-  OrderedSet,
-  Map,
-  MapWithDefault
-} from "ember-metal/map";
+import OrderedSet from 'ember-metal/ordered_set';
+import Map from 'ember-metal/map';
+import MapWithDefault from 'ember-metal/map_with_default';
 
 var object, number, string, map;
 

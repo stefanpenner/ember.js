@@ -62,7 +62,9 @@ beginPropertyChanges, endPropertyChanges, changeProperties} from "ember-metal/pr
 import {Descriptor, defineProperty} from "ember-metal/properties";
 import {set, trySet} from "ember-metal/property_set";
 
-import {OrderedSet, Map, MapWithDefault} from "ember-metal/map";
+import Map from "ember-metal/map";
+import MapWithDefault from "ember-metal/map_with_default";
+import OrderedSet from "ember-metal/ordered_set";
 import getProperties from "ember-metal/get_properties";
 import setProperties from "ember-metal/set_properties";
 import {watchKey, unwatchKey} from "ember-metal/watch_key";
