@@ -14,7 +14,7 @@ test('Ember.run.bind builds a run-loop wrapped callback handler', function() {
   };
 
   var proxiedFunction = run.bind(obj, obj.increment, 1);
-  equal(proxiedFunction(), 1);
+  equal(proxiedFunction(), undefined);
   equal(obj.value, 1);
 });
 
