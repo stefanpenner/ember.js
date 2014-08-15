@@ -30,6 +30,8 @@ import Component from "ember-views/views/component";
 
 import EventDispatcher from "ember-views/system/event_dispatcher";
 import ViewTargetActionSupport from "ember-views/mixins/view_target_action_support";
+import ActionManager from "ember-views/system/action_manager";
+
 // END IMPORTS
 
 /**
@@ -53,6 +55,13 @@ Ember.CoreView = CoreView;
 Ember.View = View;
 Ember.View.states = states;
 Ember.View.cloneStates = cloneStates;
+
+Ember._ActionManager = ActionManager;
+Ember._actionFor = function(element) {
+  var actionId = Ember.$(element).data('emberAction');
+
+  return ActionManager.registeredActions[actionId];
+};
 
 Ember._ViewCollection = ViewCollection;
 Ember.ContainerView = ContainerView;

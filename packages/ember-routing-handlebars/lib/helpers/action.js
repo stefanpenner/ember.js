@@ -81,6 +81,9 @@ ActionHelper.registerAction = function(actionNameOrPath, options, allowedKeys) {
 
   ActionManager.registeredActions[actionId] = {
     eventName: options.eventName,
+    actionNameOrPath: actionNameOrPath,
+    options: options,
+    allowedKeys: allowedKeys,
     handler: function handleRegisteredAction(event) {
       if (!isAllowedEvent(event, allowedKeys)) { return true; }
 
