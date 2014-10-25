@@ -1,0 +1,11 @@
+- [ ] improve step comparison UI
+- [ ] get output in json form
+- [ ] export the output in json form
+- [ ] launch_chrome should open to the running page
+- [ ] ability to all benchmarks
+- [ ] automate running + data collection
+- [ ] run against multiple versions of ember (iframe runner) or use modules (ember needs more work still for this)
+- [ ] auto-build benchmarks
+- [ ] async tests
+- [ ] pause between tests
+- [ ] sensible setup/teardown per run

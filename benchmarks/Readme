@@ -1,0 +1,11 @@
+close your chrome
+
+```js
+DISABLE_ES3=true DISABLE_JSHINT=true DISABLE_MIN=true ember s --environment=production
+npm install -g angular-benchmarks
+npm run build-benchmarks
+benchpress run
+benchpress launch_chrome
+```
+
+navigate to `localhost:3339`

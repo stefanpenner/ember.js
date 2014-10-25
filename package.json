@@ -8,9 +8,12 @@
     "pretest": "ember build --environment production",
     "test": "bin/run-tests.js",
     "start": "ember serve",
-    "docs": "ember yuidoc"
+    "docs": "ember yuidoc",
+    "bench": "benchpress build && benchpress run",
+    "launch_bench": "benchpress launch_chrome"
   },
   "devDependencies": {
+    "angular-benchpress": "^0.1.3",
     "aws-sdk": "~2.0.0-rc8",
     "bower": "~1.3.2",
     "broccoli": "0.12.0",
@@ -34,10 +37,10 @@
     "defeatureify": "~0.2.0",
     "ember-cli": "0.0.46",
     "ember-cli-yuidoc": "0.1.1",
-    "git-repo-version": "0.0.1",
     "ember-publisher": "0.0.6",
     "es6-module-transpiler": "~0.4.0",
     "express": "^4.5.0",
+    "git-repo-version": "0.0.1",
     "glob": "~3.2.8",
     "handlebars": "^2.0",
     "ncp": "~0.5.1",

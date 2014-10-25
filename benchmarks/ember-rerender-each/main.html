@@ -1,0 +1,20 @@
+<script src="../../dist/jquery/jquery.js"></script>
+<script src="../../dist/handlebars/handlebars.js"></script>
+<script src="../../dist/ember.prod.js"></script>
+<script src="../../benchmark-helpers.js"></script>
+
+<script>
+  window.App = Ember.Application.create();
+  window.App.ApplicationController = Ember.ArrayController.extend();
+  window.App.ApplicationRoute= Ember.Route.extend();
+</script>
+
+<script type="text/x-handlebars">
+<h2>Welcome to Ember.js</h2>
+<ul>
+{{#each}}
+  <li> {{firstName}} {{lastName}}</li>
+{{/each}}
+</ul>
+</script>
+
