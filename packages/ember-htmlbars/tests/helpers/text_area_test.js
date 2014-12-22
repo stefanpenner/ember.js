@@ -12,15 +12,16 @@ function set(object, key, value) {
 
 QUnit.module("{{textarea}}", {
   setup: function() {
-    controller = {
+    controller = Ember.Object.create({
       val: 'Lorem ipsum dolor'
-    };
+    });
 
     textArea = View.extend({
       controller: controller,
       template: compile('{{textarea disabled=disabled value=val}}')
     }).create();
 
+    debugger;
     runAppend(textArea);
   },
 

@@ -62,15 +62,27 @@ function actionsFor(obj, eventName) {
     listeners = meta.listeners = create(null);
     listeners.__source__ = obj;
   } else if (listeners.__source__ !== obj) {
+    if (obj.constructor.Listeners) {
+    //  debugger;
+      listeners = meta.listeners = new obj.constructor.Listeners(obj);
+    } else {
+      var Listeners = function(obj) {
+        this.__source__ = obj;
+      };
+
+      Listeners.prototype = listeners;
+      // this needs to be pinned somewhere better
+      obj.constructor.Listeners = Listeners;
     // setup inherited copy of the listeners object
-    listeners = meta.listeners = create(listeners);
-    listeners.__source__ = obj;
+      listeners = meta.listeners = new Listeners(obj);
+    }
   }
 
   actions = listeners[eventName];
 
   // if there are actions, but the eventName doesn't exist in our listeners, then copy them from the prototype
   if (actions && actions.__source__ !== obj) {
+    // not all cases need a clone, figure out how to specialize
     actions = listeners[eventName] = listeners[eventName].slice();
     actions.__source__ = obj;
   } else if (!actions) {
