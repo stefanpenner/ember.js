@@ -210,8 +210,7 @@ export default Mixin.create({
     @return {Ember.Observable}
   */
   set(keyName, value) {
-    set(this, keyName, value);
-    return this;
+    return set(this, keyName, value);
   },
 
 
