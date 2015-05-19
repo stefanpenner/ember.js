@@ -445,8 +445,7 @@ export default Mixin.create({
   incrementProperty(keyName, increment) {
     if (isNone(increment)) { increment = 1; }
     Ember.assert("Must pass a numeric value to incrementProperty", (!isNaN(parseFloat(increment)) && isFinite(increment)));
-    set(this, keyName, (parseFloat(get(this, keyName)) || 0) + increment);
-    return get(this, keyName);
+    return set(this, keyName, (parseFloat(get(this, keyName)) || 0) + increment);
   },
 
   /**
@@ -465,8 +464,7 @@ export default Mixin.create({
   decrementProperty(keyName, decrement) {
     if (isNone(decrement)) { decrement = 1; }
     Ember.assert("Must pass a numeric value to decrementProperty", (!isNaN(parseFloat(decrement)) && isFinite(decrement)));
-    set(this, keyName, (get(this, keyName) || 0) - decrement);
-    return get(this, keyName);
+    return set(this, keyName, (get(this, keyName) || 0) - decrement);
   },
 
   /**
@@ -482,8 +480,7 @@ export default Mixin.create({
     @return {Object} The new property value
   */
   toggleProperty(keyName) {
-    set(this, keyName, !get(this, keyName));
-    return get(this, keyName);
+    return set(this, keyName, !get(this, keyName));
   },
 
   /**
